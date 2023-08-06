@@ -74,7 +74,10 @@ class XR_OT_install_xinput(Operator):
     bl_options = {'REGISTER'}
 
     def execute(self, context):
-        python_exe = os.path.join(sys.prefix, 'bin', 'python.exe')
+        
+        python_exe = os.path.join(sys.prefix, 'bin', 'python.exe') #windows
+        if os.path.isfile(python_exe) is False:
+            python_exe = os.path.join(sys.prefix, 'bin', 'python3.10') #linux & macOS
         target = os.path.join(sys.prefix, 'lib', 'site-packages')
         
         subprocess.call([python_exe, '-m', 'ensurepip'])
@@ -230,17 +233,18 @@ class XR_PT_panel(Panel):
         col.operator("wm.drive_nodegroup")
 
         xinput_reader_empty = get_reader()
-        controller_inputs = xinput_reader_empty.items()
+        if xinput_reader_empty is not None:
+            controller_inputs = xinput_reader_empty.items()
 
-        box = layout.box()
-        box.label(text="Controller Inputs")
-        param_count = 0
-        for controller_input in controller_inputs:
-            if type(xinput_reader_empty[controller_input[0]]) == float or int or bool:
-                row = box.row()
-                prop_name = controller_input[0]
-                row.prop(xinput_reader_empty, f'["{prop_name}"]')
-                param_count += 1
+            box = layout.box()
+            box.label(text="Controller Inputs")
+            param_count = 0
+            for controller_input in controller_inputs:
+                if type(xinput_reader_empty[controller_input[0]]) == float or int or bool:
+                    row = box.row()
+                    prop_name = controller_input[0]
+                    row.prop(xinput_reader_empty, f'["{prop_name}"]')
+                    param_count += 1
 
 #--------------------------------------------------------------------------------------------------------------------------------#
 #------------------------------------------------------------REGISTER------------------------------------------------------------#
