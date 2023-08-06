@@ -74,15 +74,11 @@ class XR_OT_install_xinput(Operator):
     bl_options = {'REGISTER'}
 
     def execute(self, context):
-        
-        python_exe = os.path.join(sys.prefix, 'bin', 'python.exe') #windows
-        if os.path.isfile(python_exe) is False:
-            python_exe = os.path.join(sys.prefix, 'bin', 'python3.10') #linux & macOS
-        target = os.path.join(sys.prefix, 'lib', 'site-packages')
+        python_exe = sys.executable
         
         subprocess.call([python_exe, '-m', 'ensurepip'])
         subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'pip'])
-        subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'Xinput-Python', '-t', target])
+        subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'Xinput-Python'])
         return {'FINISHED'}
 
 class XR_OT_monitor_controller(Operator):
