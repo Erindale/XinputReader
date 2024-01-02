@@ -50,14 +50,14 @@ class XR_PT_preferences_panel(AddonPreferences):
 
 
 def get_reader():
-    xinput_reader_empty = bpy.data.objects.get("XInput Reader")
-    return xinput_reader_empty
+    return bpy.data.objects.get("XInput Reader")
 
 def create_reader():
     xinput_reader_empty = bpy.data.objects.get("XInput Reader")
     if xinput_reader_empty is None:
         xinput_reader_empty = bpy.data.objects.new("XInput Reader", None)
-        bpy.context.scene.collection.objects.link(xinput_reader_empty)
+        xinput_reader_empty.use_fake_user = True
+        # bpy.context.scene.collection.objects.link(xinput_reader_empty)
     return xinput_reader_empty
 
 
@@ -129,7 +129,7 @@ class XR_OT_monitor_controller(Operator):
     def execute(self, context):
         try:
             import XInput
-        except:
+        except exception as e:
             self.report({'ERROR'}, "XInput not installed")
             return {'CANCELLED'}
         
@@ -180,8 +180,12 @@ class XR_OT_drive_nodegroup(Operator):
 
         for inputs in controller_inputs:
             if type(xinput_reader_empty[inputs[0]]) == float or int or bool:
-                if inputs[0] not in xinput_nodegroup.outputs:
-                    xinput_nodegroup.outputs.new("NodeSocketFloat", inputs[0])
+                if bpy.app.version[0] == 3:
+                    if inputs[0] not in xinput_nodegroup.outputs:
+                        xinput_nodegroup.outputs.new("NodeSocketFloat", inputs[0])
+                if bpy.app.version[0] == 4:
+                    if inputs[0] not in xinput_nodegroup.interface.items_tree:
+                        xinput_nodegroup.interface.new_socket(inputs[0], in_out="OUTPUT", socket_type='NodeSocketFloat')
 
                 #set up driver
                 output_socket = output_node.inputs[inputs[0]]
