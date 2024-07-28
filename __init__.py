@@ -11,23 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-bl_info = {
-    "name": "XInput Reader",
-    "author": "Erindale Woodford",
-    "description": "Install and use the XInput library with a gamepad",
-    "version": (0, 1),
-    "blender": (3, 6, 0),
-    "location": "View3D > Toolbar > XInput",
-    "warning": "",
-    "doc_url": "",
-    "category": "3D View",
-}
-
 import bpy, os, sys, subprocess
-try:
-    import XInput
-except:
-    pass
+
+import XInput
+
+
 from bpy.types import (Operator, Panel, AddonPreferences)   
 
 #--------------------------------------------------------------------------------------------------------------------------------#
@@ -39,10 +27,6 @@ class XR_PT_preferences_panel(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("wm.install_xinput")
-        layout.label(text="Might need to run Blender as Admin")
-        layout.label(text="Check System Console for success/failure message")
-        layout.label(text="Restart Blender after installing")
 
 #------------------------------------------------------------------------------------------------------------------------------#
 #----------------------------------------------------------FUNCTIONS-----------------------------------------------------------#
@@ -66,20 +50,6 @@ def create_reader():
 #----------------------------------------------------------OPERATORS-----------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------------------------#
 
-
-class XR_OT_install_xinput(Operator):
-    bl_idname = "wm.install_xinput"
-    bl_label = "Install XInput"
-    bl_description = "Installs XInput"
-    bl_options = {'REGISTER'}
-
-    def execute(self, context):
-        python_exe = sys.executable
-        
-        subprocess.call([python_exe, '-m', 'ensurepip'])
-        subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'pip'])
-        subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'Xinput-Python'])
-        return {'FINISHED'}
 
 class XR_OT_monitor_controller(Operator):
     bl_idname = "wm.monitor_controller"
@@ -127,11 +97,6 @@ class XR_OT_monitor_controller(Operator):
         return {'PASS_THROUGH'}
     
     def execute(self, context):
-        try:
-            import XInput
-        except exception as e:
-            self.report({'ERROR'}, "XInput not installed")
-            return {'CANCELLED'}
         
         xinput_reader_empty = create_reader()
 
@@ -252,7 +217,6 @@ class XR_PT_panel(Panel):
 
 
 classes = (
-    XR_OT_install_xinput,
     XR_OT_monitor_controller,
     XR_OT_drive_nodegroup,
     XR_PT_panel,
