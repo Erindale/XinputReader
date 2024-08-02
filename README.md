@@ -14,6 +14,7 @@ This add-on is **not** heavily tested but you're welcome to fork and adjust as r
 ~~Install the XInput library via pip using the button in the add-on preferences.
 Toggle system console to check if it succeeded or errored. If you see a lot of red, you'll need to run Blender as an administrator.
 If you still see red, try downloading a portable version of Blender.~~
+
 (Following 4.2 extension conventions, the python wheel is now bundled)
 
 Runs as a modal operator so take care with the lack of auto-saves!!
